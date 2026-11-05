@@ -1,0 +1,13 @@
+{
+  "name": "Interview Trainer Agent",
+  "description": "An AI-powered Interview Trainer built with IBM watsonx.ai, Granite models, LangChain, and RAG.",
+  "repository": "https://github.com/pje-063/AICTE-BOB-",
+  "keywords": ["python", "flask", "ibm-watsonx", "granite-models", "langchain", "rag", "aicte"],
+  "env": {
+    "USE_MOCK": {
+      "description": "Set to True to bypass API limits during local testing",
+      "value": "True",
+      "required": false
+    }
+  }
+}
