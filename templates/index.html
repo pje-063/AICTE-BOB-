@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Trainer Agent – Powered by IBM Granite</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<header class="app-header">
+  <div class="header-inner">
+    <div class="logo-group">
+      <div class="logo-icon">🎯</div>
+      <div>
+        <h1 class="app-title">Interview Trainer Agent</h1>
+        <p class="app-subtitle">Powered by IBM Granite &amp; RAG · AICTE Problem Statement #22</p>
+      </div>
+    </div>
+    <div id="statusBadge" class="status-badge checking">Connecting…</div>
+  </div>
+</header>
+
+<!-- ── Navigation tabs ────────────────────────────────────────────────────── -->
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="profile">📝 Profile Input</button>
+  <button class="tab-btn" data-tab="resume">📄 Upload Resume</button>
+  <button class="tab-btn" data-tab="evaluate">🔍 Answer Evaluator</button>
+  <button class="tab-btn" data-tab="strategy">🗓️ Study Roadmap</button>
+  <button class="tab-btn" data-tab="search">🔎 Question Search</button>
+</nav>
+
+<main class="main-content">
+
+  <!-- ── Tab: Profile Input ──────────────────────────────────────────────── -->
+  <section id="tab-profile" class="tab-panel active">
+    <div class="card">
+      <h2 class="card-title">🎓 Generate Interview Preparation Plan</h2>
+      <p class="card-desc">Enter your profile to get tailored questions, model answers, and a preparation strategy.</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Full Name <span class="required">*</span></label>
+          <input type="text" id="name" placeholder="e.g. Arjun Sharma" />
+        </div>
+        <div class="form-group">
+          <label for="jobRole">Target Job Role <span class="required">*</span></label>
+          <select id="jobRole">
+            <option value="">— Select Role —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="expLevel">Experience Level <span class="required">*</span></label>
+          <select id="expLevel">
+            <option value="">— Select Level —</option>
+            <option value="entry">Entry (0–2 years)</option>
+            <option value="mid">Mid (2–5 years)</option>
+            <option value="senior">Senior (5+ years)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="timeline">Preparation Timeline (days)</label>
+          <input type="number" id="timeline" value="30" min="7" max="90" />
+        </div>
+        <div class="form-group full-width">
+          <label for="skills">Key Skills <span class="muted">(comma-separated)</span></label>
+          <input type="text" id="skills" placeholder="e.g. Python, SQL, Machine Learning, Communication" />
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="btnGeneratePlan">
+        <span class="btn-icon">⚡</span> Generate My Interview Plan
+      </button>
+    </div>
+
+    <div id="profileResult" class="result-panel hidden"></div>
+  </section>
+
+  <!-- ── Tab: Resume Upload ──────────────────────────────────────────────── -->
+  <section id="tab-resume" class="tab-panel hidden">
+    <div class="card">
+      <h2 class="card-title">📄 Upload Your Resume</h2>
+      <p class="card-desc">Upload your resume (PDF or TXT) and let the agent auto-detect your profile and generate a tailored plan.</p>
+
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon">📂</div>
+        <p class="upload-text">Drag &amp; drop your resume here, or <span class="link-text">click to browse</span></p>
+        <p class="upload-hint">Supported: PDF, TXT · Max 10 MB</p>
+        <input type="file" id="resumeFile" accept=".pdf,.txt" style="display:none" />
+      </div>
+      <div id="fileInfo" class="file-info hidden"></div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="resumeRole">Override Job Role <span class="muted">(optional)</span></label>
+          <select id="resumeRole">
+            <option value="">— Auto-detect from resume —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="resumeLevel">Override Experience Level <span class="muted">(optional)</span></label>
+          <select id="resumeLevel">
+            <option value="">— Auto-detect from resume —</option>
+            <option value="entry">Entry</option>
+            <option value="mid">Mid</option>
+            <option value="senior">Senior</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="resumeTimeline">Preparation Timeline (days)</label>
+          <input type="number" id="resumeTimeline" value="30" min="7" max="90" />
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="btnUploadResume">
+        <span class="btn-icon">🚀</span> Analyse Resume &amp; Generate Plan
+      </button>
+    </div>
+
+    <div id="resumeResult" class="result-panel hidden"></div>
+  </section>
+
+  <!-- ── Tab: Answer Evaluator ───────────────────────────────────────────── -->
+  <section id="tab-evaluate" class="tab-panel hidden">
+    <div class="card">
+      <h2 class="card-title">🔍 Answer Evaluator</h2>
+      <p class="card-desc">Practice answering an interview question and receive AI-powered feedback with a model answer and score.</p>
+
+      <div class="form-group">
+        <label for="evalRole">Job Role <span class="required">*</span></label>
+        <select id="evalRole">
+          <option value="">— Select Role —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="evalQuestion">Interview Question <span class="required">*</span></label>
+        <input type="text" id="evalQuestion" placeholder="e.g. Explain the difference between a stack and a queue." />
+      </div>
+      <div class="form-group">
+        <label for="evalAnswer">Your Answer <span class="required">*</span></label>
+        <textarea id="evalAnswer" rows="6" placeholder="Type your answer here…"></textarea>
+      </div>
+
+      <button class="btn btn-secondary" id="btnEvaluate">
+        <span class="btn-icon">📊</span> Evaluate My Answer
+      </button>
+    </div>
+
+    <div id="evaluateResult" class="result-panel hidden"></div>
+  </section>
+
+  <!-- ── Tab: Study Roadmap ─────────────────────────────────────────────── -->
+  <section id="tab-strategy" class="tab-panel hidden">
+    <div class="card">
+      <h2 class="card-title">🗓️ Personalised Study Roadmap</h2>
+      <p class="card-desc">Get a day-by-day study plan tailored to your role, level, and timeline.</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="stratRole">Target Job Role <span class="required">*</span></label>
+          <select id="stratRole">
+            <option value="">— Select Role —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="stratLevel">Experience Level <span class="required">*</span></label>
+          <select id="stratLevel">
+            <option value="">— Select Level —</option>
+            <option value="entry">Entry</option>
+            <option value="mid">Mid</option>
+            <option value="senior">Senior</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="stratTimeline">Timeline (days)</label>
+          <input type="number" id="stratTimeline" value="30" min="7" max="90" />
+        </div>
+        <div class="form-group full-width">
+          <label for="stratSkills">Key Skills</label>
+          <input type="text" id="stratSkills" placeholder="e.g. Python, Django, PostgreSQL" />
+        </div>
+      </div>
+
+      <button class="btn btn-accent" id="btnStrategy">
+        <span class="btn-icon">📅</span> Generate Roadmap
+      </button>
+    </div>
+
+    <div id="strategyResult" class="result-panel hidden"></div>
+  </section>
+
+  <!-- ── Tab: Question Search ───────────────────────────────────────────── -->
+  <section id="tab-search" class="tab-panel hidden">
+    <div class="card">
+      <h2 class="card-title">🔎 Search Interview Questions</h2>
+      <p class="card-desc">Instantly search the knowledge base for role-specific questions, tips, and strategies.</p>
+
+      <div class="search-row">
+        <input type="text" id="searchQuery" placeholder="e.g. system design, STAR method, SQL optimisation…" />
+        <select id="searchRole">
+          <option value="">All Roles</option>
+        </select>
+        <button class="btn btn-primary" id="btnSearch">Search</button>
+      </div>
+    </div>
+
+    <div id="searchResult" class="result-panel hidden"></div>
+  </section>
+
+</main>
+
+<!-- ── Loading overlay ─────────────────────────────────────────────────────── -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="loader-card">
+    <div class="spinner"></div>
+    <p id="loadingMsg">Generating your personalised interview plan…</p>
+    <p class="loader-sub">IBM Granite is thinking 🤖</p>
+  </div>
+</div>
+
+<!-- ── Toast ──────────────────────────────────────────────────────────────── -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
