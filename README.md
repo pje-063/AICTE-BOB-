@@ -234,6 +234,10 @@ IBM_GRANITE_MODEL_ID=ibm/granite-3-8b-instruct
 
 ---
 ## Project Screenshots
+![Interview Trainer Agent](images/WhatsApp Image 2026-11-06 at 12.50.57 PM)
+![Interview Trainer Agent](images/WhatsApp Image 2026-11-06 at 12.50.57 PM (1))
+![Interview Trainer Agent](images/WhatsApp Image 2026-11-06 at 12.50.58 PM)
+![Interview Trainer Agent](WhatsApp Image 2026-11-06 at 12.50.58 PM (1))
 
 ## 👥 Team / AICTE Context
 
