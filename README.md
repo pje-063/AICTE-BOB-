@@ -233,6 +233,7 @@ IBM_GRANITE_MODEL_ID=ibm/granite-3-8b-instruct
 | **Vanilla JS** | Frontend (no framework needed) |
 
 ---
+## Project Screenshots
 
 ## 👥 Team / AICTE Context
 
